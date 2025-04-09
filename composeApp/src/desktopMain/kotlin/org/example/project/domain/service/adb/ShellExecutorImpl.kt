@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.adb
 
 import kotlinx.coroutines.runBlocking
 import org.example.project.domain.model.ShellResult
@@ -26,7 +26,6 @@ class ShellExecutorImpl : ShellExecutor {
         )
     }
 }
-
 private fun main()= runBlocking {
     val shell = ShellExecutorImpl()
     val result = shell.exec(listOf(ADBPATH, "-t", "1", "shell", "echo", "hello"))

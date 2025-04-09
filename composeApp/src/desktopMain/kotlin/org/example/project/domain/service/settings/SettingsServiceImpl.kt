@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.settings
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

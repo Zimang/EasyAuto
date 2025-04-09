@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.adb
 
 import org.example.project.domain.model.Device
 

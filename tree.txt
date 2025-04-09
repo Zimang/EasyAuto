@@ -1,0 +1,41 @@
+.
+|-- README.md
+|-- build.gradle.kts
+|-- composeApp
+|   |-- build
+|   |   |-- classes
+|   |   |   `-- kotlin
+|   |   |-- generated
+|   |   |   `-- compose
+|   |   |-- kotlin
+|   |   |   `-- compileKotlinDesktop
+|   |   `-- processedResources
+|   |       `-- desktop
+|   |-- build.gradle.kts
+|   |-- cropped_result.png
+|   |-- screenshot_test.png
+|   |-- src
+|   |   |-- androidMain
+|   |   |   |-- AndroidManifest.xml
+|   |   |   |-- kotlin
+|   |   |   `-- res
+|   |   |-- commonMain
+|   |   |   |-- composeResources
+|   |   |   `-- kotlin
+|   |   `-- desktopMain
+|   |       |-- kotlin
+|   |       `-- resources
+|   `-- test_log.js
+|-- gradle
+|   |-- libs.versions.toml
+|   `-- wrapper
+|       |-- gradle-wrapper.jar
+|       `-- gradle-wrapper.properties
+|-- gradle.properties
+|-- gradlew
+|-- gradlew.bat
+|-- local.properties
+|-- settings.gradle.kts
+`-- tree.txt
+
+22 directories, 16 files

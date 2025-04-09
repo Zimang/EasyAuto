@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.settings
 
 import java.io.File
 

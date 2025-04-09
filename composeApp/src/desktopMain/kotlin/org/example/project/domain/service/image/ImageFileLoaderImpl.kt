@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.image
 
 import java.awt.image.BufferedImage
 import java.io.File

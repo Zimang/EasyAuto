@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.image
 
 import kotlinx.coroutines.runBlocking
 import org.example.project.domain.model.Rect
@@ -17,9 +17,9 @@ class DefaultImageCropper : ImageCropper {
     }
 }
 
-private fun main(): Unit =runBlocking {
-    val image = ImageIO.read(File("D:\\workplace\\proj\\KotlinProject\\composeApp\\screenshot_test.png"))
-    val cropper = DefaultImageCropper()
-    val cropped = cropper.crop(image, Rect(100, 100, 200, 200))
-    ImageIO.write(cropped, "png", File("cropped_result.png"))
-}
+//private fun main(): Unit =runBlocking {
+//    val image = ImageIO.read(File("D:\\workplace\\proj\\KotlinProject\\composeApp\\screenshot_test.png"))
+//    val cropper = DefaultImageCropper()
+//    val cropped = cropper.crop(image, Rect(100, 100, 200, 200))
+//    ImageIO.write(cropped, "png", File("cropped_result.png"))
+//}

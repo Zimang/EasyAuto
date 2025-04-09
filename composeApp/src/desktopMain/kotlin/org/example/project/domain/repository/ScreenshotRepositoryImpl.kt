@@ -1,8 +1,8 @@
 package org.example.project.domain.repository
 
 import org.example.project.domain.model.ScreenshotSource
-import org.example.project.domain.service.AdbService
-import org.example.project.domain.service.ImageFileLoader
+import org.example.project.domain.service.adb.AdbService
+import org.example.project.domain.service.image.ImageFileLoader
 import java.awt.image.BufferedImage
 
 class ScreenshotRepositoryImpl(

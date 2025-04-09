@@ -1,4 +1,4 @@
-package org.example.project.domain.service
+package org.example.project.domain.service.adb
 
 import kotlinx.coroutines.runBlocking
 import org.example.project.domain.model.Device
@@ -45,11 +45,11 @@ class DeviceServiceImpl(
     }
 }
 
-private fun  main() = runBlocking {
-    val service = DeviceServiceImpl(ADBPATH)
-    val devices = service.getConnectedDevices()
-    devices.forEach {
-        println("${it.name} [t=${it.transportId}] model=${it.model}")
-    }
-
-}
+//private fun  main() = runBlocking {
+//    val service = DeviceServiceImpl(ADBPATH)
+//    val devices = service.getConnectedDevices()
+//    devices.forEach {
+//        println("${it.name} [t=${it.transportId}] model=${it.model}")
+//    }
+//
+//}

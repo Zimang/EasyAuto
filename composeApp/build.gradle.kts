@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ComposePlugin.CommonComponentsDependencies.resources
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,7 +9,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
-
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -18,10 +18,17 @@ kotlin {
     }
     
     jvm("desktop")
-    
+
+//    tasks.named<Copy>("desktopProcessResources") {
+//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    }
     sourceSets {
+//        val desktopMain by getting
         val desktopMain by getting
-        
+//        {
+//            resources.  srcDirs("src/desktopMain/resources")
+//        }
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
