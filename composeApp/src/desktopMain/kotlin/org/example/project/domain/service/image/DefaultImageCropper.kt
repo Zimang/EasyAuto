@@ -7,7 +7,10 @@ import java.io.File
 import javax.imageio.ImageIO
 
 class DefaultImageCropper : ImageCropper {
-    override fun crop(image: BufferedImage, rect: Rect): BufferedImage {
+    override fun crop(image: BufferedImage, rect: Rect?): BufferedImage {
+        if (rect == null) {
+            return image
+        }
         return image.getSubimage(
             rect.x.coerceIn(0, image.width),
             rect.y.coerceIn(0, image.height),

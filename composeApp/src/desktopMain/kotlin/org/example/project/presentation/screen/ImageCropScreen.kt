@@ -14,8 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -75,21 +78,25 @@ fun ImageCropScreen(
                     val rectStart = startOffset
                     val rectEnd = endOffset
                     if (rectStart != null && rectEnd != null) {
-                        val left = minOf(rectStart.x, rectEnd.x)
-                        val top = minOf(rectStart.y, rectEnd.y)
-                        val right = maxOf(rectStart.x, rectEnd.x)
-                        val bottom = maxOf(rectStart.y, rectEnd.y)
 
-                        // 暗化整个画布
-                        drawRect(Color(0xAA000000))
+                        val constrainedEndX = rectEnd.x.coerceIn(0f, size.width)
+                        val constrainedEndY = rectEnd.y.coerceIn(0f, size.height)
 
-                        // 清除裁剪区域的暗化
+
+                        val left = minOf(rectStart.x, constrainedEndX)
+                        val top = minOf(rectStart.y, constrainedEndY)
+                        val right = maxOf(rectStart.x, constrainedEndX)
+                        val bottom = maxOf(rectStart.y, constrainedEndY)
+
+                        // 裁剪区域外变暗
                         drawIntoCanvas { canvas ->
-                            withTransform({
-                                clipRect(left, top, right, bottom)
-                            }) {
-                                drawRect(Color.Transparent)
+                            val paint = Paint().apply {
+                                color = Color(0xAA000000)
                             }
+                            canvas.save()
+                            canvas.clipRect(Rect(left, top, right, bottom).toAndroidRect(), ClipOp.Difference)
+                            canvas.drawRect(0f, 0f, size.width, size.height, paint)
+                            canvas.restore()
                         }
 
                         // 绘制边框
@@ -97,7 +104,7 @@ fun ImageCropScreen(
                             color = Color.Red,
                             topLeft = Offset(left, top),
                             size = androidx.compose.ui.geometry.Size(right - left, bottom - top),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f)
+                            style = Stroke(width = 3f)
                         )
                     }
                 }
@@ -129,8 +136,6 @@ fun ImageCropScreen(
     }
 }
 
-
-
 @Composable
 fun TestCropScreen() {
     val image = remember {
@@ -145,6 +150,7 @@ fun TestCropScreen() {
         onCancel = { println("❌ 取消裁剪") },
         onConfirmCrop = { rect ->
             println("✅ 用户选择的裁剪区域: $rect")
+
         }
     )
 }

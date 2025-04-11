@@ -13,7 +13,7 @@ class CaptureAndStoreImageUseCase(
     private val imageCropper: ImageCropper,
     private val imageRepository: ImageRepository,
 ) {
-    suspend fun execute(deviceId: String, cropRegion: Rect): UserImageItem {
+    suspend fun execute(deviceId: String, cropRegion: Rect?): UserImageItem {
         val screenshot = adbService.captureScreenshot(deviceId)
         val cropped = imageCropper.crop(screenshot, cropRegion)
 

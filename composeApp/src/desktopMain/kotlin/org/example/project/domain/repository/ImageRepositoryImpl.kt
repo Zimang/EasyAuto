@@ -11,7 +11,11 @@ class ImageRepositoryImpl : ImageRepository {
     override val allImages: Flow<List<UserImageItem>> = images
 
     override suspend fun addImage(item: UserImageItem) {
-        images.update { it + item }
+        images.update {
+            val newList = it + item
+            println("当前图片总数: ${newList.size}")
+            newList
+        }
     }
 
     override suspend fun removeImage(name: String) {
