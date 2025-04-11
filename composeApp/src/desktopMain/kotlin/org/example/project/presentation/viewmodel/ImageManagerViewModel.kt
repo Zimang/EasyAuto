@@ -36,6 +36,7 @@ class ImageManagerViewModel(
     fun removeImage(name: String) {
         viewModelScope.launch {
             imageRepository.removeImage(name)
+
         }
     }
     fun cropImage(source: UserImageItem, rect: Rect) {

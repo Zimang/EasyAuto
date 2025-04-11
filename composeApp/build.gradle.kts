@@ -44,6 +44,12 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            //报错
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -116,7 +116,10 @@ fun ImageGalleryScreen(
             DropdownMenuItem(
                 text = { Text("删除") },
                 onClick = {
-                    showMenuForImage?.let { viewModel.removeImage(it.name) }
+                    showMenuForImage?.let {
+                        viewModel.removeImage(it.name)
+                        File(it.imagePath).delete() // 删除实际文件
+                    }
                     showMenuForImage = null
                 }
             )
@@ -134,85 +137,61 @@ fun BufferedImage.toImageBitmap(): ImageBitmap {
     return skiaImage.toComposeImageBitmap()
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
-private fun ImageTile(
-    item: UserImageItem,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
-) {
-    val imageBitmap = remember(item.imagePath) {
-        runCatching {
-            ImageIO.read(File(item.imagePath))?.toImageBitmap()
-        }.getOrNull()
+fun TestImageGallrayScreen() {
+    val imageRepository = remember { ImageRepositoryImpl() }
+
+    val captureUseCase = remember {
+        CaptureAndStoreImageUseCase(AdbServiceImpl(), DefaultImageCropper(), imageRepository)
     }
 
-    Box(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        if (imageBitmap != null) {
-            Image(bitmap = imageBitmap, contentDescription = null)
-        } else {
-            Text("❌ 读取失败")
+    val verifyImageUseCase = remember {
+        VerifyImageUseCase(AdbServiceImpl(), ScriptExecutionServiceImpl())
+    }
+
+    val viewModel = remember { ImageManagerViewModel(imageRepository) }
+
+    val cropTarget = remember { mutableStateOf<UserImageItem?>(null) }
+    val scope = rememberCoroutineScope()
+
+    ImageGalleryScreen(
+        viewModel = viewModel,
+        onRequestCaptureScreen = {
+            scope.launch {
+                val userImageItem=captureUseCase.execute("1", null)
+                println(userImageItem)
+            }
+        },
+        onRequestVerify = {
+            scope.launch {
+                verifyImageUseCase.execute("1",it)
+            }
+        },
+        onRequestCrop = {  item -> cropTarget.value = item }
+    )
+
+    // 🚪 单独裁剪窗口
+    cropTarget.value?.let { image ->
+        Window(
+            onCloseRequest = { cropTarget.value = null },
+            title = "裁剪图片 - ${image.name}",
+            state = rememberWindowState(width = 1200.dp, height = 1000.dp)
+        ) {
+            ImageCropScreen(
+                image = image,
+                onCancel = { cropTarget.value = null },
+                onConfirmCrop = { rect ->
+                    viewModel.cropImage(image, rect)
+                    cropTarget.value = null
+                }
+            )
         }
     }
 }
 
 private fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "Image Gallery") {
-        val imageRepository = remember { ImageRepositoryImpl() }
-
-        val captureUseCase = remember {
-            CaptureAndStoreImageUseCase(AdbServiceImpl(), DefaultImageCropper(), imageRepository)
-        }
-
-        val verifyImageUseCase = remember {
-            VerifyImageUseCase(AdbServiceImpl(), ScriptExecutionServiceImpl())
-        }
-
-        val viewModel = remember { ImageManagerViewModel(imageRepository) }
-
-        val cropTarget = remember { mutableStateOf<UserImageItem?>(null) }
-        val scope = rememberCoroutineScope()
-
-        ImageGalleryScreen(
-            viewModel = viewModel,
-            onRequestCaptureScreen = {
-                scope.launch {
-                    val userImageItem=captureUseCase.execute("1", null)
-                    println(userImageItem)
-                }
-            },
-            onRequestVerify = {
-                scope.launch {
-                    verifyImageUseCase.execute("1",it)
-                 }
-            },
-            onRequestCrop = {  item -> cropTarget.value = item }
-        )
-
-        // 🚪 单独裁剪窗口
-        cropTarget.value?.let { image ->
-            Window(
-                onCloseRequest = { cropTarget.value = null },
-                title = "裁剪图片 - ${image.name}",
-                state = rememberWindowState(width = 600.dp, height = 600.dp)
-            ) {
-                ImageCropScreen(
-                    image = image,
-                    onCancel = { cropTarget.value = null },
-                    onConfirmCrop = { rect ->
-                        viewModel.cropImage(image, rect)
-                        cropTarget.value = null
-                    }
-                )
-            }
-        }
+         TestImageGallrayScreen()
     }
 }
