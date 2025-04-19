@@ -234,7 +234,7 @@ function singleTest(){
     // logic3() 
 }
 
-if (!requestScreenCapture(false)) {
+if (!requestScreenCapture(${isLandScape})) {
     toast("请求截图失败");
     exit();
 }

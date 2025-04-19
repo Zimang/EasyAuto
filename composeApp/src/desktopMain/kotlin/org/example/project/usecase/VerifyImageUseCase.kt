@@ -12,7 +12,7 @@ class VerifyImageUseCase(
 //    private val scriptGenerator: PlaceholderScriptGenerator,
     private val scriptExecutionService: ScriptExecutionService,
 ) {
-    suspend fun execute(deviceId: String, image: UserImageItem): ScriptExecutionResult {
+    suspend fun execute(deviceId: String, image: UserImageItem,isLandScape:Boolean=false): ScriptExecutionResult {
         val file = File(image.imagePath)
         val remotePath = "/sdcard/autojs_test/${file.name}"
         adbService.pushFile(deviceId, file, remotePath)
@@ -21,11 +21,15 @@ class VerifyImageUseCase(
 //            placeholders = mapOf("imageName" to file.name)
 //        ).generateScript()
         val scriptContent = PlaceholderScriptGenerator(
-            placeholders = mapOf("imageName" to file.name)
+            placeholders = mapOf(
+                "imageName" to file.name,
+                "isLandScape" to isLandScape.toString(),
+            )
         ).generateScript()
 
         val tempScript = File.createTempFile("verify_", ".js").apply {
             writeText(scriptContent)
+            println("Successfully created temporary file")
             deleteOnExit()
         }
 

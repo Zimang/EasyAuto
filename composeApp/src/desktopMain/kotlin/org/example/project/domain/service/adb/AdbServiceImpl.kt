@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-const val ADBPATH="C:\\Users\\Admin\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe"
+//const val ADBPATH="C:\\Users\\Admin\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe"
+const val ADBPATH="adb.exe"
 
 class AdbServiceImpl(
     private val adbPath: String = ADBPATH  // e.g. "/usr/bin/adb"
@@ -17,7 +18,8 @@ class AdbServiceImpl(
         val tempFile = File.createTempFile("screenshot", ".png")
 
         val process = ProcessBuilder(
-            adbPath, "-t", transportId,
+//            adbPath, "-t", transportId,
+            adbPath, "-s", transportId,
             "exec-out", "screencap", "-p"
         ).redirectOutput(tempFile).start()
 
@@ -35,7 +37,8 @@ class AdbServiceImpl(
         remotePath: String
     ): Result<Unit> = runCatching {
         val process = ProcessBuilder(
-            adbPath, "-t", deviceId,
+//            adbPath, "-t", deviceId,
+            adbPath, "-s", deviceId,
             "push", localFile.absolutePath, remotePath
         ).start()
 

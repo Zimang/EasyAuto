@@ -23,19 +23,24 @@ class ScriptExecutionServiceImpl(
     ): ScriptExecutionResult = coroutineScope {
         val remoteDir = "/sdcard/autojs_test"
         val scriptRemotePath = "$remoteDir/${scriptFile.name}"
-
-        shell.exec(listOf(adbPath, "-t", transportId, "logcat", "-c"))
+        val cusScriptRemotePath = "$remoteDir/customUtils.js"
+        val cusScriptPath = "templates/customUtils.js"
+        val resource = this::class.java.classLoader.getResource(cusScriptPath)
+        println("hi")
+        shell.exec(listOf(adbPath, "-s", transportId, "logcat", "-c"))
 
         // 创建目录
-        shell.exec(listOf(adbPath, "-t", transportId, "shell", "mkdir", "-p", remoteDir))
-
+        shell.exec(listOf(adbPath, "-s", transportId, "shell", "mkdir", "-p", remoteDir))
         // push 脚本
-        shell.exec(listOf(adbPath, "-t", transportId, "push", scriptFile.absolutePath, scriptRemotePath))
+        shell.exec(listOf(adbPath, "-s", transportId, "push", scriptFile.absolutePath, scriptRemotePath))
+//        shell.exec(listOf(adbPath, "-s", transportId, "push", File(resource.toURI()).absolutePath, cusScriptRemotePath)).let {
+//            println(it)
+//        }
 
         // push 图片资源
         for (res in resources) {
             val remoteRes = "$remoteDir/${res.name}"
-            shell.exec(listOf(adbPath, "-t", transportId, "push", res.absolutePath, remoteRes))
+            shell.exec(listOf(adbPath, "-s", transportId, "push", res.absolutePath, remoteRes))
         }
 
 
@@ -52,22 +57,16 @@ class ScriptExecutionServiceImpl(
 
         // 启动 AutoJS
         val launchCommand = listOf(
-            adbPath, "-t", transportId,
+            adbPath, "-s", transportId,
             "shell", "am", "start",
             "-n", "org.autojs.autoxjs.v6/org.autojs.autojs.external.open.RunIntentActivity",
             "-d", scriptRemotePath
         )
+
         shell.exec(launchCommand)
 
-        // 等待日志返回
-//        val logsResult = logsDeferred.await()
-//        return ScriptExecutionResult(
-//            success = logsResult.isSuccess,
-//            output = logsResult.getOrNull()?.joinToString("\n") ?: "",
-//            error = logsResult.exceptionOrNull()?.message
-//        )
         // 等待脚本执行结束（基于日志判断）
-        withTimeoutOrNull(8000) {
+        withTimeoutOrNull(6000) {
             while (!logs.any { it.contains("===TEST_END===") }) {
                 delay(200)
             }

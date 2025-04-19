@@ -8,4 +8,5 @@ interface ImageRepository {
 
     suspend fun addImage(item: UserImageItem)
     suspend fun removeImage(name: String)
+    suspend fun removeAllImage()
 }

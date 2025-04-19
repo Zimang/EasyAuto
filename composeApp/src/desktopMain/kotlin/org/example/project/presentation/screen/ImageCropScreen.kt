@@ -71,41 +71,41 @@ fun ImageCropScreen(
                             if (mode == "SELECT") {
                                 val cropTopLeft = Offset(0f, 0f)
                                 val cropBoxSize = size
-                                println("[onDragStart] SELECT triggered at: $it")
+//                                println("[onDragStart] SELECT triggered at: $it")
                                 startOffset = it.coerceInRect(cropTopLeft, cropBoxSize.toSize())
                                 endOffset = startOffset
                             } else {
-                                println("[onDragStart] DRAG mode")
+//                                println("[onDragStart] DRAG mode")
                             }
                         },
                         onDragEnd = {
-                            if (mode == "SELECT") {
-                                println("[onDragEnd] SELECT completed: start=$startOffset, end=$endOffset")
-                            } else {
-                                println("[onDragEnd] DRAG completed, final offset = $offset")
-                            }
+//                            if (mode == "SELECT") {
+//                                println("[onDragEnd] SELECT completed: start=$startOffset, end=$endOffset")
+//                            } else {
+//                                println("[onDragEnd] DRAG completed, final offset = $offset")
+//                            }
                         },
                         onDragCancel = {
-                            println("[onDragCancel] gesture cancelled")
+//                            println("[onDragCancel] gesture cancelled")
                         },
                         onDrag = { change, dragAmount ->
                             if (mode == "SELECT") {
                                 val cropTopLeft = Offset(0f, 0f)
                                 val cropBoxSize = size
                                 val newEnd = change.position.coerceInRect(cropTopLeft, cropBoxSize.toSize())
-                                if (startOffset == null) {
-                                    println("[onDrag] inferred start = ${newEnd - dragAmount}")
-                                }
-                                println("[onDrag] SELECT dragging: dragAmount = $dragAmount, current = ${change.position}")
+//                                if (startOffset == null) {
+//                                    println("[onDrag] inferred start = ${newEnd - dragAmount}")
+//                                }
+//                                println("[onDrag] SELECT dragging: dragAmount = $dragAmount, current = ${change.position}")
                                 startOffset = startOffset ?: (newEnd - dragAmount)
                                 endOffset = newEnd
                             } else {
-                                println("[onDrag] DRAG dragging: delta = $dragAmount scale $scale")
-                                println("[onDrag] DRAG dragging: offsets from = $offset")
+//                                println("[onDrag] DRAG dragging: delta = $dragAmount scale $scale")
+//                                println("[onDrag] DRAG dragging: offsets from = $offset")
 //                                offset += dragAmount
                                 // 修正拖动图像时 offset 增量
                                 offset += dragAmount /scale
-                                println("[onDrag] DRAG dragging: offsets to = $offset")
+//                                println("[onDrag] DRAG dragging: offsets to = $offset")
                             }
                             change.consume()
                         }

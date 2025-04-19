@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.example.project.domain.model.Rect
@@ -43,8 +44,14 @@ fun ImageGalleryScreen(
     viewModel: ImageManagerViewModel,
     onRequestCrop: (UserImageItem) -> Unit,
     onRequestVerify: (UserImageItem) -> Unit,
+    onRequestVerifyLandScape: (UserImageItem) -> Unit,
     onRequestCaptureScreen: () -> Job,
+    deviceId: String,
 ) {
+    LaunchedEffect(Unit) {
+        println("ImageGalleryScreen 显示了 deviceId=$deviceId")
+    }
+
     val imageList by viewModel.imageList.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -55,7 +62,8 @@ fun ImageGalleryScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(128.dp),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .padding(bottom = 72.dp), // 留出 FAB 空间,
             contentPadding = PaddingValues(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -83,10 +91,20 @@ fun ImageGalleryScreen(
         }
 
         FloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .zIndex(1f), // 显式设置层级
             onClick = { onRequestCaptureScreen() }
         ) {
             Text("📷")
+        }
+        FloatingActionButton(
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(bottom = 100.dp, end = 16.dp,start = 16.dp, top = 16.dp)
+                .zIndex(1f), // 显式设置层级
+            onClick = { viewModel.deleteAll() }
+        ) {
+            Text("DA")
         }
 
         DropdownMenu(
@@ -110,6 +128,13 @@ fun ImageGalleryScreen(
                 text = { Text("发送验证") },
                 onClick = {
                     showMenuForImage?.let(onRequestVerify)
+                    showMenuForImage = null
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("发送验证(横板)") },
+                onClick = {
+                    showMenuForImage?.let(onRequestVerifyLandScape)
                     showMenuForImage = null
                 }
             )
@@ -168,7 +193,13 @@ fun TestImageGallrayScreen() {
                 verifyImageUseCase.execute("1",it)
             }
         },
-        onRequestCrop = {  item -> cropTarget.value = item }
+        onRequestVerifyLandScape = {
+            scope.launch {
+                verifyImageUseCase.execute("1",it,true)
+            }
+        },
+        onRequestCrop = {  item -> cropTarget.value = item },
+        deviceId = "1"
     )
 
     // 🚪 单独裁剪窗口

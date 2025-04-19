@@ -19,7 +19,7 @@ class ScriptLogServiceImpl(private val adbPath: String= ADBPATH) : ScriptLogServ
     ): Result<List<String>> = withContext(Dispatchers.IO) {
         val logs = mutableListOf<String>()
         var started = false
-        val process = ProcessBuilder(adbPath, "-t", transportId, "logcat", "-v", "time")
+        val process = ProcessBuilder(adbPath, "-s", transportId, "logcat", "-v", "time")
             .redirectErrorStream(true)
             .start()
 
@@ -48,7 +48,7 @@ class ScriptLogServiceImpl(private val adbPath: String= ADBPATH) : ScriptLogServ
         transportId: String,
         filter: (String) -> Boolean
     ): Flow<String> = callbackFlow {
-        val process = ProcessBuilder(adbPath, "-t", transportId, "logcat", "-v", "time")
+        val process = ProcessBuilder(adbPath, "-s", transportId, "logcat", "-v", "time")
             .redirectErrorStream(true)
             .start()
 

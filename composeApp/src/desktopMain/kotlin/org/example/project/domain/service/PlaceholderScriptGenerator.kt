@@ -47,6 +47,8 @@ class PlaceholderScriptGenerator(
         var result = template
         for ((key, value) in placeholders) {
             result = result.replace("\${$key}", value)
+            println("$key: $value")
+            println(result)
         }
         return result
     }
@@ -60,4 +62,5 @@ private fun main() = runBlocking {
     )
     val script = generator.generateScript()
     println("生成脚本内容：\n$script")
+    println("：\n$script")
 }
