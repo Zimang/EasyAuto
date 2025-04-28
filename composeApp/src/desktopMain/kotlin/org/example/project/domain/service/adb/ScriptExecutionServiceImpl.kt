@@ -70,6 +70,7 @@ class ScriptExecutionServiceImpl(
             while (!logs.any { it.contains("===TEST_END===") }) {
                 delay(200)
             }
+
         }
 
         job.cancelAndJoin()

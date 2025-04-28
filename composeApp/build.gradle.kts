@@ -54,6 +54,11 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+
+            //网络
+            implementation("io.ktor:ktor-server-core:2.3.7")
+            implementation("io.ktor:ktor-server-netty:2.3.7")
+            implementation("io.ktor:ktor-server-host-common:2.3.7")
         }
     }
 }
